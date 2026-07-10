@@ -1,0 +1,39 @@
+id: problem_framing
+name: Problem Framing
+description: Clarifies an unclear problem before jumping to solutions.
+suitable_for:
+  - vague or messy situations
+  - early-stage problem exploration
+  - cases where goals, constraints, or stakeholders are unclear
+steps:
+  - id: situation
+    name: Describe the Situation
+    prompt: >
+      Restate the user's situation in neutral language. Separate observed facts,
+      interpretations, emotions, and unknowns.
+  - id: goal
+    name: Define the Desired Outcome
+    prompt: >
+      Identify what the user appears to want. Propose a clear desired outcome and
+      list criteria that would make a solution good enough.
+  - id: constraints
+    name: Map Constraints and Levers
+    prompt: >
+      List constraints, resources, dependencies, risks, and variables the user can
+      influence.
+  - id: options
+    name: Generate Options
+    prompt: >
+      Generate several practical options. Include conservative, creative, and
+      incremental options.
+  - id: next_step
+    name: Choose the Next Thinking Step
+    prompt: >
+      Recommend the smallest useful next step for learning more or reducing
+      uncertainty.
+expected_outputs:
+  - clear problem statement
+  - assumptions and unknowns
+  - evaluation criteria
+  - option set
+  - recommended next step

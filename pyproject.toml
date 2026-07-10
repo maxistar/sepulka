@@ -1,0 +1,16 @@
+[project]
+name = "sepulka"
+version = "0.1.0"
+description = "Educational cognitive assistant / intelligence amplifier"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "PyYAML>=6.0.0",
+]
+
+[project.scripts]
+sepulka = "sepulka.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,0 +1,40 @@
+id: goldratt_conflict_cloud
+name: Goldratt Conflict Cloud
+description: Surfaces assumptions behind a dilemma and looks for a way to dissolve the conflict.
+suitable_for:
+  - conflicts
+  - dilemmas
+  - trade-offs
+  - choices between incompatible options
+  - situations where both sides protect valid needs
+steps:
+  - id: conflict
+    name: State the Conflict
+    prompt: >
+      Identify the two incompatible actions or choices. Name them as Action D and
+      Action D'. Keep the statement concrete and non-judgmental.
+  - id: needs
+    name: Identify Needs
+    prompt: >
+      For each action, identify the important need it protects. Name them Need B
+      and Need C.
+  - id: common_goal
+    name: Find the Common Goal
+    prompt: >
+      Identify the higher-level objective that both needs serve. Name it Goal A.
+  - id: assumptions
+    name: Expose Assumptions
+    prompt: >
+      List the assumptions connecting Goal A to Needs B/C and Needs B/C to
+      Actions D/D'. Mark which assumptions seem weakest or testable.
+  - id: injections
+    name: Invent Injections
+    prompt: >
+      Suggest changes, experiments, or reframes that could satisfy both needs
+      without forcing a binary choice.
+expected_outputs:
+  - common goal
+  - two protected needs
+  - two conflicting actions
+  - key assumptions
+  - possible conflict dissolvers
