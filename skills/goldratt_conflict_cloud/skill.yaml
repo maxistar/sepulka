@@ -1,3 +1,5 @@
+kind: thinking_skill
+schema_version: "1"
 id: goldratt_conflict_cloud
 name: Goldratt Conflict Cloud
 description: Surfaces assumptions behind a dilemma and looks for a way to dissolve the conflict.
@@ -55,3 +57,5 @@ expected_outputs:
   - two conflicting actions
   - key assumptions
   - possible conflict dissolvers
+examples:
+  - problem: I do not know whether to quit my job or stay for stability.

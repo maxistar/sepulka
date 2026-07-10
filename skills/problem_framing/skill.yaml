@@ -1,3 +1,5 @@
+kind: thinking_skill
+schema_version: "1"
 id: problem_framing
 name: Problem Framing
 description: Clarifies an unclear problem before jumping to solutions.
@@ -37,3 +39,5 @@ expected_outputs:
   - evaluation criteria
   - option set
   - recommended next step
+examples:
+  - problem: I have a vague idea for a project but do not know where to start.

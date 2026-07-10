@@ -89,16 +89,21 @@ To save the final result automatically, use `--save-note`. Saved analysis notes 
 uv run python -m sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности" --save-note
 ```
 
-## Thinking Processes
+## Thinking Skills
 
-Processes live in `processes/` as YAML files.
+Sepulka thinking skills are reusable, declarative cognitive processes. They are not Codex skills, plugins, shell tools, or action tools. A thinking skill describes how Sepulka should help a person think through a problem.
 
-Current processes:
+Skills live in `skills/<skill-id>/skill.yaml`. Sepulka loads built-in thinking tools from `skills/`.
+
+Current built-in thinking skills:
 
 - `problem_framing`
 - `goldratt_conflict_cloud`
 
-Each process contains:
+Each skill contains:
+
+- `kind`
+- `schema_version`
 
 - `id`
 - `name`
@@ -109,11 +114,13 @@ Each process contains:
 - `steps`
 - `expected_outputs`
 
-## Add A New Process
+## Add A New Thinking Skill
 
-Create a new file in `processes/`, for example:
+Create a new directory with a `skill.yaml` file, for example `skills/decision_matrix/skill.yaml`:
 
 ```yaml
+kind: thinking_skill
+schema_version: "1"
 id: decision_matrix
 name: Decision Matrix
 description: Compares options against weighted criteria.
@@ -137,7 +144,9 @@ expected_outputs:
   - recommendation
 ```
 
-Then update `sepulka/router.py` so Sepulka can choose the new process and explain that choice in the CLI output.
+Then update `sepulka/router.py` so Sepulka can choose the new thinking skill and explain that choice in the CLI output.
+
+Skill directories may contain extra documentation or examples later, but the runtime only executes the declarative `skill.yaml` content. It does not run skill-local code.
 
 ## Notes
 
