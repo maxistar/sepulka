@@ -66,11 +66,12 @@ uv run sepulka "Я не знаю, уходить ли мне с текущей �
 Expected output includes:
 
 - selected process;
+- selection reason, including matched conflict keywords when relevant;
 - intermediate analysis structure;
 - final recommendations;
-- a suggestion to save the result to a note.
+- an interactive offer to save the result when running in a terminal.
 
-To save the final result:
+To save the final result automatically, use `--save-note`:
 
 ```bash
 uv run python -m sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности" --save-note
@@ -117,7 +118,7 @@ expected_outputs:
   - recommendation
 ```
 
-Then update `sepulka/router.py` so Sepulka can choose the new process.
+Then update `sepulka/router.py` so Sepulka can choose the new process and explain that choice in the CLI output.
 
 ## Notes
 

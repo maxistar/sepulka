@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 CONFLICT_KEYWORDS = {
     "conflict",
     "dilemma",
@@ -25,8 +28,23 @@ CONFLICT_KEYWORDS = {
 }
 
 
-def choose_process(problem: str) -> str:
+@dataclass(frozen=True)
+class RoutingDecision:
+    process_id: str
+    reason: str
+    matched_keywords: list[str]
+
+
+def choose_process(problem: str) -> RoutingDecision:
     text = problem.lower()
-    if any(keyword in text for keyword in CONFLICT_KEYWORDS):
-        return "goldratt_conflict_cloud"
-    return "problem_framing"
+    matched_keywords = sorted(keyword for keyword in CONFLICT_KEYWORDS if keyword in text)
+
+    if matched_keywords:
+        reason = "Detected conflict or dilemma signals: " + ", ".join(matched_keywords)
+        return RoutingDecision("goldratt_conflict_cloud", reason, matched_keywords)
+
+    return RoutingDecision(
+        "problem_framing",
+        "No conflict or dilemma signals detected; using general problem framing.",
+        [],
+    )

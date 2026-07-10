@@ -5,6 +5,12 @@ import yaml
 
 
 DEFAULT_PROCESSES_DIR = Path(__file__).resolve().parent.parent / "processes"
+REQUIRED_PROCESS_FIELDS = {"id", "name", "description", "suitable_for", "steps", "expected_outputs"}
+REQUIRED_STEP_FIELDS = {"id", "name", "prompt"}
+
+
+class ProcessValidationError(ValueError):
+    pass
 
 
 def load_process(process_id: str, processes_dir: Path = DEFAULT_PROCESSES_DIR) -> dict[str, Any]:
@@ -15,13 +21,30 @@ def load_process(process_id: str, processes_dir: Path = DEFAULT_PROCESSES_DIR) -
     with path.open("r", encoding="utf-8") as file:
         process = yaml.safe_load(file)
 
-    required = {"id", "name", "description", "suitable_for", "steps", "expected_outputs"}
-    missing = sorted(required - set(process))
-    if missing:
-        raise ValueError(f"Process {path} is missing fields: {', '.join(missing)}")
-
+    _validate_process(process, path)
     return process
 
 
 def load_all_processes(processes_dir: Path = DEFAULT_PROCESSES_DIR) -> list[dict[str, Any]]:
     return [load_process(path.stem, processes_dir) for path in sorted(processes_dir.glob("*.yaml"))]
+
+
+def _validate_process(process: Any, path: Path) -> None:
+    if not isinstance(process, dict):
+        raise ProcessValidationError(f"Process file {path} must contain a YAML mapping.")
+
+    missing = sorted(REQUIRED_PROCESS_FIELDS - set(process))
+    if missing:
+        raise ProcessValidationError(f"Process file {path} is missing required fields: {', '.join(missing)}")
+
+    if not isinstance(process["steps"], list) or not process["steps"]:
+        raise ProcessValidationError(f"Process file {path} field 'steps' must be a non-empty list.")
+
+    for index, step in enumerate(process["steps"], start=1):
+        if not isinstance(step, dict):
+            raise ProcessValidationError(f"Process file {path} step {index} must be a YAML mapping.")
+
+        missing_step_fields = sorted(REQUIRED_STEP_FIELDS - set(step))
+        if missing_step_fields:
+            fields = ", ".join(missing_step_fields)
+            raise ProcessValidationError(f"Process file {path} step {index} is missing required fields: {fields}")

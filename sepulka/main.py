@@ -18,8 +18,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
-    process_id = choose_process(args.problem)
-    process = load_process(process_id)
+    routing = choose_process(args.problem)
+    process = load_process(routing.process_id)
     matching_notes = read_notes(args.problem)
 
     try:
@@ -32,8 +32,10 @@ def main(argv: list[str] | None = None) -> int:
 
     memory = result["memory"]
     final_answer = result["final_answer"]
+    note_content = memory.as_markdown() + "\n\n" + final_answer
 
     print(f"Selected process: {process['id']} - {process['name']}")
+    print(f"Selection reason: {routing.reason}")
     print()
     print("Intermediate analysis:")
     for step in memory.steps:
@@ -43,9 +45,27 @@ def main(argv: list[str] | None = None) -> int:
     print(final_answer)
 
     if args.save_note:
-        note_path = write_note(f"analysis-{process['id']}", memory.as_markdown() + "\n\n" + final_answer)
-        print(f"\nSaved note: {note_path}")
+        _save_analysis(process["id"], note_content)
+    elif _is_interactive():
+        _prompt_save_analysis(process["id"], note_content)
     else:
         print("\nTo save this result, rerun with --save-note.")
 
     return 0
+
+
+def _is_interactive() -> bool:
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+def _prompt_save_analysis(process_id: str, content: str) -> None:
+    answer = input("\nSave this result as a markdown note? [y/N] ").strip().lower()
+    if answer in {"y", "yes"}:
+        _save_analysis(process_id, content)
+    else:
+        print("To save this result later, rerun with --save-note.")
+
+
+def _save_analysis(process_id: str, content: str) -> None:
+    note_path = write_note(f"analysis-{process_id}", content)
+    print(f"\nSaved note: {note_path}")
