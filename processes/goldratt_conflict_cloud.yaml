@@ -7,6 +7,12 @@ suitable_for:
   - trade-offs
   - choices between incompatible options
   - situations where both sides protect valid needs
+contextual_intake_prompt: >
+  Extract the two concrete sides of the user's dilemma and generate contextual
+  intake questions for a Goldratt Conflict Cloud. Questions must refer to the
+  user's concrete choices rather than generic labels like "first side" or
+  "other side". Generate questions that discover attraction, protected needs,
+  feared negative outcomes, and practical constraints for both sides.
 intake_questions:
   - id: option_a_attraction
     question: What makes the first side of this conflict attractive or important?

@@ -53,6 +53,9 @@ def _validate_process(process: Any, path: Path) -> None:
     if "intake_questions" in process:
         _validate_intake_questions(process["intake_questions"], path)
 
+    if "contextual_intake_prompt" in process and not isinstance(process["contextual_intake_prompt"], str):
+        raise ProcessValidationError(f"Process file {path} field 'contextual_intake_prompt' must be a string when present.")
+
 
 def _validate_intake_questions(intake_questions: Any, path: Path) -> None:
     if not isinstance(intake_questions, list):

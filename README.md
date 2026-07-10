@@ -14,7 +14,7 @@ notes.
 - Accepts a problem from the CLI.
 - Routes the problem to a thinking process.
 - Loads the selected process from YAML.
-- Runs process-defined intake questions first when used interactively.
+- Generates contextual intake questions first when used interactively and supported by the selected process.
 - Runs each process step through an OpenAI-compatible chat completions API.
 - Keeps intake answers and intermediate results in working memory.
 - Prints the selected process, intermediate analysis, and final recommendations.
@@ -54,7 +54,7 @@ POST /v1/chat/completions
 
 ## Run
 
-In a terminal, Sepulka runs process-defined intake questions before analysis when the selected process supports them:
+In a terminal, Sepulka can generate contextual intake questions before analysis when the selected process supports them:
 
 ```bash
 uv run python -m sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности"
@@ -72,18 +72,18 @@ For a one-shot draft without intake questions, use `--fast`:
 uv run sepulka --fast "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности"
 ```
 
-Non-interactive runs, such as scripts and pipes, automatically use fast mode and never wait for prompts.
+Non-interactive runs, such as scripts and pipes, automatically use fast mode and never wait for prompts. Contextual intake generation is also skipped in fast mode.
 
 Expected output includes:
 
 - selected process;
 - selection reason, including matched conflict keywords when relevant;
-- intake questions when running interactively and supported by the selected process;
+- contextual intake questions when running interactively and supported by the selected process;
 - intermediate analysis structure;
 - final recommendations;
 - an interactive offer to save the result when running in a terminal.
 
-To save the final result automatically, use `--save-note`:
+To save the final result automatically, use `--save-note`. Saved analysis notes include a timestamp in the filename so repeated saves do not overwrite earlier results:
 
 ```bash
 uv run python -m sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности" --save-note
@@ -104,7 +104,8 @@ Each process contains:
 - `name`
 - `description`
 - `suitable_for`
-- optional `intake_questions`
+- optional `contextual_intake_prompt`
+- optional `intake_questions` fallback questions
 - `steps`
 - `expected_outputs`
 
@@ -118,6 +119,8 @@ name: Decision Matrix
 description: Compares options against weighted criteria.
 suitable_for:
   - decisions with multiple options
+contextual_intake_prompt: >
+  Generate concrete intake questions from the user problem.
 intake_questions:
   - id: context
     question: What context should Sepulka know before analysis?

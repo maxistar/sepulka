@@ -45,6 +45,20 @@ intake_questions:
         self.assertIn("intake question 1", str(error.exception))
         self.assertIn("question", str(error.exception))
 
+    def test_contextual_intake_prompt_must_be_string(self) -> None:
+        process_text = VALID_PROCESS + """
+contextual_intake_prompt:
+  - invalid
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "demo.yaml"
+            path.write_text(process_text, encoding="utf-8")
+
+            with self.assertRaises(ProcessValidationError) as error:
+                load_process("demo", Path(directory))
+
+        self.assertIn("contextual_intake_prompt", str(error.exception))
+
 
 if __name__ == "__main__":
     unittest.main()
