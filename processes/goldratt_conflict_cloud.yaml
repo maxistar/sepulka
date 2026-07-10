@@ -7,6 +7,17 @@ suitable_for:
   - trade-offs
   - choices between incompatible options
   - situations where both sides protect valid needs
+intake_questions:
+  - id: option_a_attraction
+    question: What makes the first side of this conflict attractive or important?
+  - id: option_b_attraction
+    question: What makes the other side attractive or important?
+  - id: option_a_risk
+    question: What are you afraid could happen if you choose the first side?
+  - id: option_b_risk
+    question: What are you afraid could happen if you choose the other side?
+  - id: decision_constraints
+    question: What constraints, deadlines, or commitments shape this decision?
 steps:
   - id: conflict
     name: State the Conflict

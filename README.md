@@ -14,8 +14,9 @@ notes.
 - Accepts a problem from the CLI.
 - Routes the problem to a thinking process.
 - Loads the selected process from YAML.
+- Runs process-defined intake questions first when used interactively.
 - Runs each process step through an OpenAI-compatible chat completions API.
-- Keeps intermediate results in working memory.
+- Keeps intake answers and intermediate results in working memory.
 - Prints the selected process, intermediate analysis, and final recommendations.
 - Can save the result as a markdown note.
 
@@ -53,6 +54,8 @@ POST /v1/chat/completions
 
 ## Run
 
+In a terminal, Sepulka runs process-defined intake questions before analysis when the selected process supports them:
+
 ```bash
 uv run python -m sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности"
 ```
@@ -63,10 +66,19 @@ You can also use the installed script:
 uv run sepulka "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности"
 ```
 
+For a one-shot draft without intake questions, use `--fast`:
+
+```bash
+uv run sepulka --fast "Я не знаю, уходить ли мне с текущей работы или остаться ради стабильности"
+```
+
+Non-interactive runs, such as scripts and pipes, automatically use fast mode and never wait for prompts.
+
 Expected output includes:
 
 - selected process;
 - selection reason, including matched conflict keywords when relevant;
+- intake questions when running interactively and supported by the selected process;
 - intermediate analysis structure;
 - final recommendations;
 - an interactive offer to save the result when running in a terminal.
@@ -92,6 +104,7 @@ Each process contains:
 - `name`
 - `description`
 - `suitable_for`
+- optional `intake_questions`
 - `steps`
 - `expected_outputs`
 
@@ -105,6 +118,9 @@ name: Decision Matrix
 description: Compares options against weighted criteria.
 suitable_for:
   - decisions with multiple options
+intake_questions:
+  - id: context
+    question: What context should Sepulka know before analysis?
 steps:
   - id: options
     name: Identify Options

@@ -7,6 +7,7 @@ import yaml
 DEFAULT_PROCESSES_DIR = Path(__file__).resolve().parent.parent / "processes"
 REQUIRED_PROCESS_FIELDS = {"id", "name", "description", "suitable_for", "steps", "expected_outputs"}
 REQUIRED_STEP_FIELDS = {"id", "name", "prompt"}
+REQUIRED_INTAKE_FIELDS = {"id", "question"}
 
 
 class ProcessValidationError(ValueError):
@@ -48,3 +49,22 @@ def _validate_process(process: Any, path: Path) -> None:
         if missing_step_fields:
             fields = ", ".join(missing_step_fields)
             raise ProcessValidationError(f"Process file {path} step {index} is missing required fields: {fields}")
+
+    if "intake_questions" in process:
+        _validate_intake_questions(process["intake_questions"], path)
+
+
+def _validate_intake_questions(intake_questions: Any, path: Path) -> None:
+    if not isinstance(intake_questions, list):
+        raise ProcessValidationError(f"Process file {path} field 'intake_questions' must be a list when present.")
+
+    for index, question in enumerate(intake_questions, start=1):
+        if not isinstance(question, dict):
+            raise ProcessValidationError(f"Process file {path} intake question {index} must be a YAML mapping.")
+
+        missing_fields = sorted(REQUIRED_INTAKE_FIELDS - set(question))
+        if missing_fields:
+            fields = ", ".join(missing_fields)
+            raise ProcessValidationError(
+                f"Process file {path} intake question {index} is missing required fields: {fields}"
+            )

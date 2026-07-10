@@ -43,6 +43,33 @@ class ProcessRunnerTests(unittest.TestCase):
         prompts = "\n\n".join(message["content"] for call in fake_llm.calls for message in call)
         self.assertIn("Respond in Russian", prompts)
 
+    def test_prompts_include_intake_answers(self) -> None:
+        fake_llm = FakeLLM()
+        ProcessRunner(fake_llm).run(
+            "I am deciding whether to stay or leave",
+            PROCESS,
+            [],
+            [{"id": "risk", "question": "What could go wrong?", "answer": "I could lose stability."}],
+        )
+
+        prompts = "\n\n".join(message["content"] for call in fake_llm.calls for message in call)
+        self.assertIn("What could go wrong?", prompts)
+        self.assertIn("I could lose stability.", prompts)
+
+    def test_saved_markdown_includes_intake_answers(self) -> None:
+        fake_llm = FakeLLM()
+        result = ProcessRunner(fake_llm).run(
+            "I am deciding whether to stay or leave",
+            PROCESS,
+            [],
+            [{"id": "risk", "question": "What could go wrong?", "answer": "I could lose stability."}],
+        )
+
+        markdown = result["memory"].as_markdown()
+        self.assertIn("## Intake", markdown)
+        self.assertIn("What could go wrong?", markdown)
+        self.assertIn("I could lose stability.", markdown)
+
 
 if __name__ == "__main__":
     unittest.main()

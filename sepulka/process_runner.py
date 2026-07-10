@@ -17,8 +17,16 @@ class ProcessRunner:
     def __init__(self, llm: LLMClient):
         self.llm = llm
 
-    def run(self, problem: str, process: dict[str, Any], notes_context: list[dict[str, str]] | None = None) -> dict[str, Any]:
+    def run(
+        self,
+        problem: str,
+        process: dict[str, Any],
+        notes_context: list[dict[str, str]] | None = None,
+        intake_answers: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
         memory = WorkingMemory(problem=problem, process_id=process["id"], notes_context=notes_context or [])
+        for item in intake_answers or []:
+            memory.add_intake_answer(item["id"], item["question"], item["answer"])
         language_hint = response_language_hint(problem)
 
         for index, step in enumerate(process["steps"], start=1):
